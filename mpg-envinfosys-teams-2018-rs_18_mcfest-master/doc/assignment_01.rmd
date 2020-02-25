@@ -1,0 +1,20 @@
+---
+title: "Assignment_01"
+output: html_document
+author: "Marvin Müsgen, Sarah Brüning, Eike Schott, Tobias Koch, Frauke von den Driesch"
+---
+
+Setup Script
+```{r, message=FALSE}
+source("F:/09_Semester/remote_sensing/mpg-envinfosys-teams-2018-rs_18_mcfest/src/000_setup.R")
+```
+
+.tif Datei einlesen
+```{r}
+b1 <- raster(paste0(envrmt$path_data_aerial, "478000_5630000.tif"))
+```
+
+.tif Datei anzeigen / plotten
+```{r}
+plot(b1)
+```

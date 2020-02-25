@@ -1,0 +1,31 @@
+FT NOMEAN
+182, maxdiameter = 20, nomean
+182, minWinNeib = "rook", nomean
+182, minWinNeib = "queen", nomean
+182, minWinNeib = "queen", nomean, maxWinDiameter = 30
+119, winFun = function(x){x * 0.08 + 0.5}, maxWinDiameter = 30, 
+148, test <- ForestTools::vwf(nadellaub, winFun = function(x){x * 0.07 + 0.5}, minHeight = 12, minWinNeib = "queen", verbose = TRUE, maxWinDiameter = 30)
+141, test <- ForestTools::vwf(nadellaub, winFun = function(x){x * 0.07 + 0.6}, minHeight = 12, minWinNeib = "queen", verbose = TRUE, maxWinDiameter = 30)
+162, test <- ForestTools::vwf(nadellaub, winFun = function(x){x * 0.07 + 0.4}, minHeight = 12, minWinNeib = "queen", verbose = TRUE, maxWinDiameter = 30)
+115, test <- ForestTools::vwf(nadellaub, winFun = function(x){x * 0.08 + 0.6}, minHeight = 12, minWinNeib = "queen", verbose = TRUE, maxWinDiameter = 30)
+
+FT MEAN 3*3
+108, test <- ForestTools::vwf(nadellaub, winFun = function(x){x * 0.08 + 0.6}, minHeight = 12, minWinNeib = "queen", verbose = TRUE, maxWinDiameter = 30)
+126, test <- ForestTools::vwf(nadellaub, winFun = function(x){x * 0.07 + 0.6}, minHeight = 12, minWinNeib = "queen", verbose = TRUE, maxWinDiameter = 30)
+138, test <- ForestTools::vwf(nadellaub, winFun = function(x){x * 0.061 + 0.6}, minHeight = 8, minWinNeib = "queen", verbose = TRUE, maxWinDiameter = 30)
+
+
+ITC MEAN 3*3
+141, crnadellaubITC <- uavRst::chmseg_ITC(chm = nadellaub, EPSG = 25832, minTreeAlt = 12, maxCrownArea = 120, movingWin = 5)
+141, crnadellaubITC <- uavRst::chmseg_ITC(chm = nadellaub, EPSG = 25832, minTreeAlt = 12, maxCrownArea = 150, movingWin = 5)
+110, crnadellaubITC <- uavRst::chmseg_ITC(chm = nadellaub, EPSG = 25832, minTreeAlt = 12, maxCrownArea = 150, movingWin = 7)
+110, crnadellaubITC <- uavRst::chmseg_ITC(chm = nadellaub, EPSG = 25832, minTreeAlt = 12, maxCrownArea = 150, movingWin = 7, TRESHSeed = 0.8)
+
+ITC NOMEAN
+181, crnadellaubITC <- uavRst::chmseg_ITC(chm = nadellaub, EPSG = 25832, minTreeAlt = 12, maxCrownArea = 150, movingWin = 7)
+
+
+
+- PCA Ergebisse diskutieren
+- ForestTools gg. ITC
+- 

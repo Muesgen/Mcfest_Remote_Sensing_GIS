@@ -1,0 +1,89 @@
+---
+title: "Assignment_02"
+author: "Eike Schott, Sarah Bruening, Frauke von den Driesch, Tobias Koch, Marvin Muesgen"
+date: "8 November 2018"
+output: html_document
+---
+
+#### Setup Skript und Bilder werden eingeladen und anschließend die Projektionen auf Gleicheit überprüft. Das in QGis geschnittene Shapefile wird eingeladen und nach Ueberpruefung der Projektion werden die Rasterdateien auf die Bounding Box des Shapefiles zugeschnitten. Die weißen Streifen werden durch Zusammenfuegen der betroffenen Bilder entfernt. Die zugeschnittenen Teilbilder werden zusammengefügt und geplottet. 
+
+--------------------------------------------------------------------------------------------------------------
+
+#### setup Skript einladen noch nicht über einheitlichen Pfad moeglich, da die Speicherkapazitaet der Uni PC's das nicht zulaesst.
+```{r, message=FALSE}
+
+source("~/edu/mpg-envinsys-plygrnd/mpg-envinfosys-teams-2018-rs_18_mcfest/src/000_setup.R")
+```
+
+#### Erstellen einer Liste, um dort die Bilder einzuladen.
+```{r}
+ls <- list.files(paste0(envrmt$path_data_aerial_org), pattern = ".tif")
+```
+
+#### Bilder einladen
+```{r}
+imagelist <- list()
+for (i in ls){
+  imagelist[[i]] <- brick(paste0(envrmt$path_data_aerial_org, i))
+}
+names(imagelist) <- 1:length(imagelist)
+```
+
+#### Ueberpruefen der Projektionen
+```{r}
+pro <- c()
+for (c in imagelist){
+  v <- crs(c)
+  pro <- c(pro, v)
+}
+pro
+if (length(unique(pro))!= 1){
+  print("at least one image has not the same projection")
+} else {
+  print("all projections are equal")
+}
+```
+
+#### Shapefile einladen
+```{r, results= 'hide'}
+abt<- readOGR(paste0(envrmt$path_data_data_mof, "uwcAbteilung.shp"),
+              layer= ogrListLayers(paste0(envrmt$path_data_data_mof, "uwcAbteilung.shp")))
+```
+
+#### Ueberpruefen der Projektion des Shapefiles
+```{r}
+crs(abt)
+
+```
+
+#### Rasterdateien auf Bounding Box des Shapefiles zugeschneiden 
+```{r, eval=FALSE, echo=TRUE}
+
+cropped <- lapply(imagelist[3:length(imagelist)], crop, abt)
+```
+
+#### (Optional) Ausschreiben der Rasterdateien
+```{r, eval=FALSE, echo=TRUE}
+for (l in cropped[1:length(cropped)]) {
+  writeRaster(l, filename = paste0(envrmt$path_data_aerial_processed, "cropped", 
+                                   substr(gsub("[.]", "_", names(l)[1]), 1, 15),
+                                   substr(gsub("[.]", "_", names(l)[1]), 18, 19), ".tif"), overwrite=TRUE)
+}
+```
+
+#### "Streifen" entfernen durch Verarbeiten sich überlappender Zellwerte
+```{r, eval=FALSE, echo=TRUE}
+imagelist_3_4_cm <- mosaic(cropped$`3`,cropped$`4`, fun="min", filename=paste0(envrmt$path_data_aerial_processed, "b3_4_cm.tif"))
+imagelist_5_6_cm <- mosaic(cropped$`5`, cropped$`6`, fun="min", filename=paste0(envrmt$path_data_aerial_processed, "b5_6_cm.tif"))
+```
+
+#### Mergen der Teilbilder
+```{r, eval=FALSE, echo=TRUE}
+img <- merge(imagelist_3_4_cm, imagelist_5_6_cm, cropped$`7`, cropped$`8`, filename=paste0(envrmt$path_data_aerial_processed, "img.tif"))
+```
+
+#### Plotten 
+```{r}
+plotRGB(brick(paste0(envrmt$path_data_aerial_processed, "img.tif")))
+plot(abt, col = adjustcolor("#92DDFF", alpha.f = 0.5), add=TRUE)
+```
